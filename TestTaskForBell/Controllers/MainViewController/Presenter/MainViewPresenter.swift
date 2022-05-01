@@ -11,6 +11,7 @@ final class MainViewPresenter {
 
     weak var view: MainViewController?
     var cars = [Car]()
+    var filteredCars = [Car]()
 
     private var firstLoad = true
 
@@ -34,7 +35,7 @@ final class MainViewPresenter {
                      self.cars.append(car)
                  }
              } catch {
-                 print("error:\(error)")
+                 print("error:\(error.localizedDescription)")
              }
          }
     }
@@ -64,11 +65,17 @@ final class MainViewPresenter {
 extension MainViewPresenter: MainViewPresenterProtocol {
 
     func getNumberOfRows() -> Int {
-        cars.count
+        filteredCars.isEmpty ? cars.count : filteredCars.count
     }
 
     func getCar(with indexPath: IndexPath) -> Car? {
-        var car = cars[indexPath.row]
+        var car: Car?
+        if !filteredCars.isEmpty {
+            car = filteredCars[indexPath.row]
+        } else {
+            car = cars[indexPath.row]
+        }
+        guard var car = car else { return nil }
         car.imageName = getCarImage(for: car.model)
         if firstLoad && indexPath.row == 0 {
             car.infoIsHidden = false
@@ -84,6 +91,19 @@ extension MainViewPresenter: MainViewPresenterProtocol {
         cars.remove(at: indexPath.row)
         car.infoIsHidden = false
         cars.insert(car, at: indexPath.row)
+        view?.reloadTableView()
+    }
+}
+
+// MARK: - MainViewPresenterProtocol
+extension MainViewPresenter: FilterViewDelegate {
+    func didFilterBy(_ text: String?) {
+        filteredCars.removeAll()
+        guard let text = text?.lowercased() else { return }
+        filteredCars = cars.filter({ car in
+            car.model.lowercased().contains(text) || car.make.lowercased().contains(text)
+        })
+        firstLoad = true
         view?.reloadTableView()
     }
 }

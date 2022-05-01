@@ -90,6 +90,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 1 {
             let view = FilterView()
+            view.delegate = presenter as? FilterViewDelegate
             return view
         }
         return nil

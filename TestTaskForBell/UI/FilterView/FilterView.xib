@@ -12,7 +12,7 @@
             <connections>
                 <outlet property="containerView" destination="BK4-Gr-ZU3" id="AlU-ZA-0T7"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="s75-P3-l4E"/>
-                <outlet property="makeFilterTextField" destination="9i1-J7-Cj0" id="VJd-td-N8g"/>
+                <outlet property="makeFilterTextField" destination="sC2-pg-Fdg" id="2yQ-Dj-sZF"/>
                 <outlet property="modelFIlterTextField" destination="9i1-J7-Cj0" id="kpb-st-dGi"/>
             </connections>
         </placeholder>
@@ -24,15 +24,21 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BK4-Gr-ZU3">
                     <rect key="frame" x="10" y="54" width="471" height="185"/>
                     <subviews>
-                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Any model" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sC2-pg-Fdg">
-                            <rect key="frame" x="15" y="136" width="441" height="34"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Any make" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9i1-J7-Cj0">
                             <rect key="frame" x="15" y="87" width="441" height="34"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <action selector="didEndEditing:" destination="-1" eventType="editingChanged" id="38Z-rm-REQ"/>
+                            </connections>
+                        </textField>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Any model" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sC2-pg-Fdg">
+                            <rect key="frame" x="15" y="136" width="441" height="34"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <action selector="didEndEditing:" destination="-1" eventType="editingChanged" id="09J-nO-A18"/>
+                            </connections>
                         </textField>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Filters" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uhg-rW-QVe">
                             <rect key="frame" x="15" y="15" width="441" height="26.5"/>
