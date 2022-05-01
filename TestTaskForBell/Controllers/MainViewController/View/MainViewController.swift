@@ -49,6 +49,12 @@ class MainViewController: UIViewController {
                            forCellReuseIdentifier: Constants.promoCellReuseID)
         tableView.register(UINib(nibName: Constants.carInfoCellNibName, bundle: nil), forCellReuseIdentifier: Constants.carInfoCellReuseID)
     }
+
+    func reloadTableView() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -70,7 +76,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.section == 0 {
             return UIScreen.main.bounds.height * 0.25
         } else {
-            return 120
+            return UITableView.automaticDimension
         }
     }
 
@@ -91,21 +97,25 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            return getPromoCell(for: indexPath)
+            return getPromoCell()
         } else {
             return getCarInfoCell(for: indexPath)
         }
     }
 
-    private func getPromoCell(for indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.promoCellReuseID, for: indexPath) as? PromotionCell else {
+    private func getPromoCell() -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.promoCellReuseID) as? PromotionCell else {
             return UITableViewCell()
         }
+        let promoCellModel = PromotionCellModel(image: UIImage(named: "Tacoma")!,
+                                                titleText: "Tacoma 2021",
+                                                promoText: "Get your's now")
+        cell.configureCell(with: promoCellModel)
         return cell
     }
 
     private func getCarInfoCell(for indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.carInfoCellReuseID, for: indexPath) as? CarInfoCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.carInfoCellReuseID) as? CarInfoCell else {
             return UITableViewCell()
         }
         let carModel = presenter?.getCar(with: indexPath)
@@ -114,7 +124,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        debugPrint(indexPath.row)
+        presenter?.didSelectRow(at: indexPath)
     }
 }
 

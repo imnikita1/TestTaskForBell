@@ -10,4 +10,5 @@ import Foundation
 protocol MainViewPresenterProtocol: AnyObject {
     func getNumberOfRows() -> Int
     func getCar(with indexPath: IndexPath) -> Car?
+    func didSelectRow(at indexPath: IndexPath)
 }

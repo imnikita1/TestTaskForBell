@@ -16,4 +16,5 @@ struct Car: Codable {
     let prosList: [String]
     let rating: Int
     var imageName: String?
+    var infoIsHidden: Bool?
 }

@@ -30,7 +30,7 @@ class PromotionCell: UITableViewCell {
         promoLabel.text = nil
     }
 
-    public func setupCell(with model: PromotionCellModel) {
+    public func configureCell(with model: PromotionCellModel) {
         promotionImage.image = model.image
         titleLabel.text = model.titleText
         promoLabel.text = model.promoText

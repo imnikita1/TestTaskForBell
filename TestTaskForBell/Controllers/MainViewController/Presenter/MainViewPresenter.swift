@@ -10,7 +10,9 @@ import Foundation
 final class MainViewPresenter {
 
     weak var view: MainViewController?
-    var cars: [Car]?
+    var cars = [Car]()
+
+    private var firstLoad = true
 
     required init(_ view: MainViewController) {
         self.view = view
@@ -25,27 +27,16 @@ final class MainViewPresenter {
         if let url = Bundle.main.url(forResource: "car_list", withExtension: "json") {
              do {
                  let data = try Data(contentsOf: url)
-                 self.cars = try JSONDecoder().decode([Car].self, from: data)
+                 let fetchedCars = try JSONDecoder().decode([Car].self, from: data)
+                 fetchedCars.forEach {
+                     var car = $0
+                     car.infoIsHidden = true
+                     self.cars.append(car)
+                 }
              } catch {
                  print("error:\(error)")
              }
          }
-    }
-}
-
-// MARK: - MainViewPresenterProtocol
-extension MainViewPresenter: MainViewPresenterProtocol {
-
-    func getNumberOfRows() -> Int {
-        cars?.count ?? 0
-    }
-
-    func getCar(with indexPath: IndexPath) -> Car? {
-        if var car = cars?[indexPath.row] {
-            car.imageName = getCarImage(for: car.model)
-            return car
-        }
-        return nil
     }
 
     private func getCarImage(for carModel: String?) -> String {
@@ -56,5 +47,43 @@ extension MainViewPresenter: MainViewPresenterProtocol {
         case "GLE coupe": return "Mercedez_benz_GLC"
         default: return "car_placeholder2"
         }
+    }
+
+    private func closeInfoSection() {
+        var carToCollapse = cars.first { $0.infoIsHidden == false }
+        carToCollapse?.infoIsHidden = true
+        let index = cars.firstIndex(where: { $0.infoIsHidden == false })
+        if let index = index, let car = carToCollapse {
+            cars.remove(at: Int(index))
+            cars.insert(car, at: Int(index))
+        }
+    }
+}
+
+// MARK: - MainViewPresenterProtocol
+extension MainViewPresenter: MainViewPresenterProtocol {
+
+    func getNumberOfRows() -> Int {
+        cars.count
+    }
+
+    func getCar(with indexPath: IndexPath) -> Car? {
+        var car = cars[indexPath.row]
+        car.imageName = getCarImage(for: car.model)
+        if firstLoad && indexPath.row == 0 {
+            car.infoIsHidden = false
+            firstLoad = false
+        }
+        return car
+    }
+
+    func didSelectRow(at indexPath: IndexPath) {
+        guard var car = getCar(with: indexPath) else { return }
+        closeInfoSection()
+        car.infoIsHidden?.toggle()
+        cars.remove(at: indexPath.row)
+        car.infoIsHidden = false
+        cars.insert(car, at: indexPath.row)
+        view?.reloadTableView()
     }
 }
